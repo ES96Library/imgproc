@@ -1,0 +1,28 @@
+function theta = rotate1(mask)
+    [height,width]=size(mask);
+    M00 = 0;
+    M10 = 0;
+    M01 = 0;
+    M11 = 0;
+    M20 = 0;
+    M02 = 0;
+    for n=1:width
+        M00 = sum(mask(:,n)) + M00;
+        M10 = sum(n*mask(:,n)) + M10;
+        M20 = sum(n*n*mask(:,n)) + M20;
+    end
+    
+    for n=1:width
+        for m=1:height
+            M11 = n*m*mask(m,n)+M11;
+        end
+    end
+    for n=1:height
+        M01 = sum(n*mask(n,:)) + M01;
+        M02 = sum(n*n*mask(n,:)) + M02; 
+    end
+    mu11 = M11/M00-((M10/M00)*(M01/M00));
+    mu20 = M20/M00-((M10/M00)*(M10/M00));
+    mu02 = M02/M00-((M01/M00)*(M01/M00));
+    theta = (.5*atan(2*mu11/(mu20-mu02)))*(180/pi);
+end
